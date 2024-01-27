@@ -121,6 +121,10 @@ $(document).ready(function () {
 
     // function to save the city to local storage
     function storeCity(city){
+        // check if the city is empty
+        if (city === "") {
+            return;
+        }
         // get the city array from local storage or create an empty array
         var cityArray = JSON.parse(localStorage.getItem("city")) || [];
         // check if city is already in the array
@@ -139,6 +143,9 @@ $(document).ready(function () {
         // clear the history section
         $("#history").empty();
         // loop through the city array
+        if (cityArray === null) {
+            return;
+        }
         for (var i = 0; i < cityArray.length; i++) {
             // create a button for each city in the array
             var cityEl = $("<button>").text(cityArray[i]);
