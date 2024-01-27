@@ -6,6 +6,8 @@ $(document).ready(function () {
         event.preventDefault();
         // get the value of the search input
         var city = $("#search-input").val().trim();
+        // store the city in local storage
+        storeCity(city);
         // if the city is not empty fetch the lon and lat of the city
         if (city) {
             fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city
@@ -94,5 +96,19 @@ $(document).ready(function () {
         $("#forecast").prepend(forecastHeadingEl);
         // add a class to the forecast section to style it
         $("#forecast").addClass("forecastStyle");
+    }
+
+    // function to save the city to local storage
+    function storeCity(city){
+        // get the city array from local storage or create an empty array
+        var cityArray = JSON.parse(localStorage.getItem("city")) || [];
+        // check if city is already in the array
+        if (cityArray.includes(city)) {
+            return;
+        }
+        // add the city to the array
+        cityArray.push(city);
+        // save the array to local storage
+        localStorage.setItem("city", JSON.stringify(cityArray));
     }
 });
