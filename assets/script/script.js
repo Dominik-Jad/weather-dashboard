@@ -12,34 +12,9 @@ $(document).ready(function () {
         $("#search-input").val("");
         // store the city in local storage
         storeCity(city);
-        // if the city is not empty fetch the lon and lat of the city
+        // if the city is not empty fetch the lon and lat of the city then the weather data 
         if (city) {
-            fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city
-                + "&limit=1&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
-                .then(function (response) {
-                    return response.json();
-                })
-                // when the data is converted to JSON, call the function to get the weather data
-                .then(function (data) {
-                    console.log(data);
-                    // get the lon and lat from the data returned from the 1st fetch 
-                    var lat = data[0].lat.toString();
-                    var lon = data[0].lon.toString();
-                    // fetch the weather data using the lon and lat
-                    fetch("https://api.openweathermap.org/data/2.5/forecast?lat=" + lat
-                        + "&lon=" + lon + "&units=metric&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
-                        .then(function (response) {
-                            return response.json();
-                        })
-                        .then(function (data) {
-                            // display the data from the second fetch 
-                            console.log(data);
-                            displayCurrentWeather(data);
-                            displayForecast(data);
-                            //update stored city buttons
-                            displayLocalStorage();
-                        });
-                });
+            fetchDataSequentially(city);
         }
         else {
             alert("Please enter a city");
@@ -52,32 +27,39 @@ $(document).ready(function () {
         event.preventDefault();
         // get the city name from the button
         var city = $(this).attr("data-city");
-        // fetch the lon and lat of the city
-        fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city
-            + "&limit=1&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
-            .then(function (response) {
-                return response.json();
-            })
-            // when the data is converted to JSON, call the function to get the weather data
-            .then(function (data) {
-                console.log(data);
-                // get the lon and lat from the data returned from the 1st fetch 
-                var lat = data[0].lat.toString();
-                var lon = data[0].lon.toString();
-                // fetch the weather data using the lon and lat
-                fetch("https://api.openweathermap.org/data/2.5/forecast?lat=" + lat
-                    + "&lon=" + lon + "&units=metric&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        // display the data from the second fetch 
-                        console.log(data);
-                        displayCurrentWeather(data);
-                        displayForecast(data);
-                    });
-            });
+        // fetch the lon and lat of the city then the weather data 
+        fetchDataSequentially(city);
     });
+
+    // function to fetch the lon and lat of the city and then fetch the weather data
+    function fetchDataSequentially(city) {
+        fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city
+        + "&limit=1&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
+        .then(function (response) {
+            return response.json();
+        })
+        // when the data is converted to JSON, call the function to get the weather data
+        .then(function (data) {
+            console.log(data);
+            // get the lon and lat from the data returned from the 1st fetch 
+            var lat = data[0].lat.toString();
+            var lon = data[0].lon.toString();
+            // fetch the weather data using the lon and lat
+            fetch("https://api.openweathermap.org/data/2.5/forecast?lat=" + lat
+                + "&lon=" + lon + "&units=metric&appid=7edf678be3dfbb52ca6176d7c38aa0f0")
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    // display the data from the second fetch 
+                    console.log(data);
+                    displayCurrentWeather(data);
+                    displayForecast(data);
+                    //update stored city buttons
+                    displayLocalStorage();
+                });
+        });
+    }
 
     // function to display the weather data
     function displayCurrentWeather(data){
