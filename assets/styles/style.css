@@ -1,0 +1,18 @@
+.forecastStyle {
+   
+    display: flex;
+    justify-content: space-between;
+}
+
+.forecastStyle div{
+   color : white;
+   background-color: rgb(104, 121, 153); 
+   margin: 10px;
+   width: 250px;
+   padding: 15px 20px;
+}
+
+.todayStyle{
+    border : 1px solid black;
+    padding: 10px;
+}

@@ -29,7 +29,7 @@ $(document).ready(function () {
                             // display the data from the second fetch 
                             console.log(data);
                             displayCurrentWeather(data);
-                            // displayForecast(data);
+                            displayForecast(data);
                         });
                 });
         }
@@ -43,7 +43,7 @@ $(document).ready(function () {
         // get the forecast data from the data returned from the fetch 
         var forecast = data.list;
         // get the current date
-        var today = dayjs().format('(DD/MM/YYYY)');
+        var today = dayjs().format('DD/MM/YYYY');
         // todays forecast 
         $("#today").empty();
         var todayHeadingEl = $("<h2>").text(data.city.name+ " " + today);
@@ -54,7 +54,45 @@ $(document).ready(function () {
 
         todayHeadingEl.append(todayIconEl);
         $("#today").append(todayHeadingEl, todaytempEl, todaywindEl, todayhumidityEl);
+
+        // add a class to the today section to style it
+        $("#today").addClass("todayStyle");
     }
    
-
+    // function to display the forecast weather data at 12pm for the next 5 days
+    function displayForecast(data){
+        // clear forecast section
+        $("#forecast").empty();
+        // get the forecast data from the data returned from the fetch 
+        var forecast = data.list;
+        // loop through the forecast data
+        for (var i = 0; i < forecast.length; i++) {
+            // get the date and time of the forecast
+            var date = forecast[i].dt_txt;
+            // if the time is 12pm, display the forecast data
+            if (date.includes("12:00:00")) {
+                // create a div to hold the forecast data
+                var forecastEl = $("<div>").addClass("col-2 forecast");
+                // create a h5 element to hold the date
+                var dateEl = $("<h5>").text(dayjs(date).format('DD/MM/YYYY'));
+                // create an img element to hold the weather icon
+                var iconEl = $("<img>").attr("src", "https://openweathermap.org/img/w/" + forecast[i].weather[0].icon + ".png");
+                // create a p element to hold the temperature
+                var tempEl = $("<p>").text("Temp: " + forecast[i].main.temp + "°C");
+                // create a p element to hold the wind speed
+                var windEl = $("<p>").text("Wind: " + forecast[i].wind.speed + " MPH");
+                // create a p element to hold the humidity
+                var humidityEl = $("<p>").text("Humidity: " + forecast[i].main.humidity + "%");
+                // append the data to the forecast div
+                forecastEl.append(dateEl, iconEl, tempEl, windEl, humidityEl);
+                // append the forecast div to the forecast section
+                $("#forecast").append(forecastEl);
+            }
+        }
+        // add a heading to the forecast section
+        var forecastHeadingEl = $("<h2>").text("5-Day Forecast:").addClass("col-12");
+        $("#forecast").prepend(forecastHeadingEl);
+        // add a class to the forecast section to style it
+        $("#forecast").addClass("forecastStyle");
+    }
 });
