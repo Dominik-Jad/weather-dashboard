@@ -1,5 +1,7 @@
 // when the document is ready, run this function 
 $(document).ready(function () {
+    // display the cities stored in local storage
+    displayLocalStorage();
     // event listener for the search button
     $("#search-button").on("click", function (event) {
         // prevent the default action of the event
@@ -32,6 +34,8 @@ $(document).ready(function () {
                             console.log(data);
                             displayCurrentWeather(data);
                             displayForecast(data);
+                            //update stored city buttons
+                            displayLocalStorage();
                         });
                 });
         }
@@ -110,5 +114,24 @@ $(document).ready(function () {
         cityArray.push(city);
         // save the array to local storage
         localStorage.setItem("city", JSON.stringify(cityArray));
+    }
+
+    function displayLocalStorage(){
+        // get the city array from local storage
+        var cityArray = JSON.parse(localStorage.getItem("city"));
+        // clear the history section
+        $("#history").empty();
+        // loop through the city array
+        for (var i = 0; i < cityArray.length; i++) {
+            // create a button for each city in the array
+            var cityEl = $("<button>").text(cityArray[i]);
+            // add classes and attributes to the button
+            cityEl.addClass("btn btn-secondary btn-block");
+            // add the city name as a data attribute
+            cityEl.attr("data-city", cityArray[i])
+            // add an id to the button
+            cityEl.attr("id", "history-button")
+            $("#history").append(cityEl);
+        }
     }
 });
